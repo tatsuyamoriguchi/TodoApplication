@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -15,7 +14,7 @@
         <!--All Tasks-->
         <scene sceneID="xlE-IM-UQA">
             <objects>
-                <tableViewController id="qAa-kJ-iCW" sceneMemberID="viewController">
+                <tableViewController id="qAa-kJ-iCW" customClass="TodoTableViewController" customModule="TodoApplication" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="gni-F1-pF2">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -57,10 +56,10 @@
             </objects>
             <point key="canvasLocation" x="1034.4000000000001" y="111.99400299850076"/>
         </scene>
-        <!--View Controller-->
+        <!--Add Todo View Controller-->
         <scene sceneID="tKT-Ta-3LN">
             <objects>
-                <viewController id="zn0-Pz-ySg" sceneMemberID="viewController">
+                <viewController id="zn0-Pz-ySg" customClass="AddTodoViewController" customModule="TodoApplication" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="UBy-em-ce7">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -83,6 +82,9 @@
                                         <color key="textColor" red="0.99999600649999998" green="1" blue="1" alpha="0.75120398116438358" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="28"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="zn0-Pz-ySg" id="QTP-uh-RXd"/>
+                                        </connections>
                                     </textView>
                                 </subviews>
                             </stackView>
@@ -102,7 +104,7 @@
                                         <rect key="frame" x="0.0" y="36" width="343" height="36"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sCK-og-LKi">
-                                                <rect key="frame" x="0.0" y="0.0" width="70" height="36"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="36"/>
                                                 <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="70" id="6qb-hY-rdK"/>
@@ -116,14 +118,20 @@
                                                         <integer key="value" value="8"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="cancel:" destination="zn0-Pz-ySg" eventType="touchUpInside" id="Yie-Xg-cK5"/>
+                                                </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="245" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Gg-cC-u3r">
-                                                <rect key="frame" x="78" y="0.0" width="265" height="36"/>
+                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="245" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Gg-cC-u3r">
+                                                <rect key="frame" x="-16" y="0.0" width="0.0" height="36"/>
                                                 <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
                                                 <state key="normal" title="Done">
                                                     <color key="titleColor" red="0.4756349325" green="0.47564673419999998" blue="0.47564041610000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="done:" destination="zn0-Pz-ySg" eventType="touchUpInside" id="Fkd-WW-S6E"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -134,7 +142,7 @@
                         <constraints>
                             <constraint firstItem="YBg-18-pzh" firstAttribute="top" secondItem="hmt-Qo-r61" secondAttribute="top" id="0uF-yZ-I6K"/>
                             <constraint firstItem="hmt-Qo-r61" firstAttribute="trailing" secondItem="YBg-18-pzh" secondAttribute="trailing" constant="16" id="B4g-wp-ubf"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="fFf-ae-sxU" secondAttribute="bottom" id="Bvs-Og-2EY"/>
+                            <constraint firstAttribute="bottom" secondItem="fFf-ae-sxU" secondAttribute="bottom" id="Bvs-Og-2EY"/>
                             <constraint firstItem="YBg-18-pzh" firstAttribute="height" secondItem="UBy-em-ce7" secondAttribute="height" multiplier="0.4" id="HlC-1K-QWW"/>
                             <constraint firstItem="hmt-Qo-r61" firstAttribute="trailing" secondItem="fFf-ae-sxU" secondAttribute="trailing" constant="16" id="Mlm-GN-fvi"/>
                             <constraint firstItem="fFf-ae-sxU" firstAttribute="leading" secondItem="hmt-Qo-r61" secondAttribute="leading" constant="16" id="aDI-tI-XVz"/>
@@ -142,6 +150,12 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="hmt-Qo-r61"/>
                     </view>
+                    <connections>
+                        <outlet property="bottomConstraint" destination="Bvs-Og-2EY" id="J2J-lV-rzU"/>
+                        <outlet property="doneButton" destination="6Gg-cC-u3r" id="Pw5-v0-phU"/>
+                        <outlet property="segmentedControl" destination="iTq-NE-TSc" id="mxX-VI-P1c"/>
+                        <outlet property="textView" destination="Lsa-zK-eae" id="Cl5-8Q-ixC"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cJE-yv-Vx9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

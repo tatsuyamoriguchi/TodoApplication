@@ -7,9 +7,13 @@
 //
 
 import UIKit
+import CoreData
 
 class AddTodoViewController: UIViewController {
 
+    // MARK: - Properties
+    var managedContext: NSManagedObjectContext!
+    
     //MARK: OUTLETS
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
@@ -26,6 +30,8 @@ class AddTodoViewController: UIViewController {
             selector: #selector(keyboardWillShow(with:)),
             name: .UIKeyboardWillShow,
             object: nil)
+        
+        textView.becomeFirstResponder()
     }
 
     // MARK: ACTIONS
@@ -41,9 +47,28 @@ class AddTodoViewController: UIViewController {
     
     @IBAction func cancel(_ sender: UIButton) {
         dismiss(animated: true)
+        textView.resignFirstResponder()
     
     }
     @IBAction func done(_ sender: UIButton) {
+        guard let title = textView.text, !title.isEmpty else {
+            return
+            // Alert user tat you can't save data without text as an error
+        }
+        let todo = Todo(context: managedContext)
+        todo.title = title
+        todo.priority = Int16(segmentedControl.selectedSegmentIndex)
+        todo.date = Date()
+        
+        // Tell managedContext to save this
+        do {
+            try managedContext.save()
+            dismiss(animated: true)
+            textView.resignFirstResponder()
+        }catch{
+            print("Saving error \(error)")
+        }
+        
     }
     
     /*
@@ -55,5 +80,17 @@ class AddTodoViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+}
 
+extension AddTodoViewController: UITextViewDelegate {
+    func textViewDidChangeSelection(_ textView: UITextView) {
+        if doneButton.isHidden {
+            textView.text.removeAll()
+            textView.textColor = .white
+            doneButton.isHidden = false
+            UIView.animate(withDuration: 0.3, animations: {
+                self.view.layoutIfNeeded()
+            })
+        }
+    }
 }

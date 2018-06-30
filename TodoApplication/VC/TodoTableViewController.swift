@@ -37,6 +37,9 @@ class TodoTableViewController: UITableViewController {
             sectionNameKeyPath: nil,
             cacheName: nil
         )
+        // In oder to update table view cell for newly added data
+        // tell resultsController is delegate.
+        resultsController.delegate = self
       
         // Fetch
         do {
@@ -54,11 +57,11 @@ class TodoTableViewController: UITableViewController {
     }
 */
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         // MARK: ???
         // Never seen this way below. resultsController is our data source now.
         // what 'sections?[section].objects?' is doing here?
-        return resultsController.sections?[section].objects?.count ?? 0
+        // return resultsController.sections?[section].objects?.count ?? 0
+        return resultsController.sections?[section].numberOfObjects ?? 0
     }
 
     
@@ -142,6 +145,24 @@ class TodoTableViewController: UITableViewController {
             vc.managedContext = coreDataStack.managedContext
         }
     }
-    
+}
 
+// MARK: - Update table view cell for newly added data
+extension TodoTableViewController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
+    }
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            if let indexPath = newIndexPath {
+                tableView.insertRows(at: [indexPath], with: .automatic)
+            }
+        default:
+            break
+        }
+    }
 }

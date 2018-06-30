@@ -45,11 +45,15 @@ class AddTodoViewController: UIViewController {
         }
     }
     
-    @IBAction func cancel(_ sender: UIButton) {
+    fileprivate func dismissAndResign() {
         dismiss(animated: true)
         textView.resignFirstResponder()
-    
     }
+
+    @IBAction func cancel(_ sender: UIButton) {
+        dismissAndResign()
+    }
+    
     @IBAction func done(_ sender: UIButton) {
         guard let title = textView.text, !title.isEmpty else {
             return
@@ -63,23 +67,11 @@ class AddTodoViewController: UIViewController {
         // Tell managedContext to save this
         do {
             try managedContext.save()
-            dismiss(animated: true)
-            textView.resignFirstResponder()
+            dismissAndResign()
         }catch{
             print("Saving error \(error)")
         }
-        
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 }
 
 extension AddTodoViewController: UITextViewDelegate {
@@ -88,9 +80,12 @@ extension AddTodoViewController: UITextViewDelegate {
             textView.text.removeAll()
             textView.textColor = .white
             doneButton.isHidden = false
-            UIView.animate(withDuration: 0.3, animations: {
-                self.view.layoutIfNeeded()
-            })
+            //UIView.animate(withDuration: 0.3, animations: {
+            UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+            //})
+        
+            }
         }
     }
 }

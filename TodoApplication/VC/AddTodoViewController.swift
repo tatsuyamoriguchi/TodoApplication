@@ -13,6 +13,8 @@ class AddTodoViewController: UIViewController {
 
     // MARK: - Properties
     var managedContext: NSManagedObjectContext!
+    // Property to update existing todo data
+    var todo: Todo?
     
     //MARK: OUTLETS
     @IBOutlet weak var textView: UITextView!
@@ -32,6 +34,14 @@ class AddTodoViewController: UIViewController {
             object: nil)
         
         textView.becomeFirstResponder()
+        
+        //
+        if let todo = todo {
+            // To delete "Say Something...."
+            textView.text = todo.title
+            textView.text = todo.title
+            segmentedControl.selectedSegmentIndex = Int(todo.priority)
+        }
     }
 
     // MARK: ACTIONS
@@ -59,10 +69,18 @@ class AddTodoViewController: UIViewController {
             return
             // Alert user tat you can't save data without text as an error
         }
-        let todo = Todo(context: managedContext)
-        todo.title = title
-        todo.priority = Int16(segmentedControl.selectedSegmentIndex)
-        todo.date = Date()
+        
+        // Check if there is already an instance of "todo" to update its data
+        if let todo = self.todo {
+            todo.title = title
+            todo.priority = Int16(segmentedControl.selectedSegmentIndex)
+        } else {
+            // otherwise create a new instance (todo data)
+            let todo = Todo(context: managedContext)
+            todo.title = title
+            todo.priority = Int16(segmentedControl.selectedSegmentIndex)
+            todo.date = Date()
+        }
         
         // Tell managedContext to save this
         do {

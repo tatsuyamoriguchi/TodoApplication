@@ -115,7 +115,17 @@ class TodoTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completion) in
             // TODO: Delete todo
-            completion(true)
+            // get the object to delete first
+            let todo = self.resultsController.object(at: indexPath)
+            self.resultsController.managedObjectContext.delete(todo)
+            // Tell managed obejct context of the change
+            do {
+                try self.resultsController.managedObjectContext.save()
+                completion(true)
+            }catch{
+                print("delete failed: \(error)")
+                completion(false)
+            }
         }
         action.image = #imageLiteral(resourceName: "trash")
         action.backgroundColor = .red
@@ -124,8 +134,18 @@ class TodoTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .destructive, title: "Check") { (action, view, completion) in
-            // TODO: Delete todo
-            completion(true)
+            // TODO: Check and delete todo
+            // get the object to check first
+            let todo = self.resultsController.object(at: indexPath)
+            self.resultsController.managedObjectContext.delete(todo)
+            // Tell managed obejct context of the change
+            do {
+                try self.resultsController.managedObjectContext.save()
+                completion(true)
+            }catch{
+                print("delete failed: \(error)")
+                completion(false)
+            }
         }
         action.image = #imageLiteral(resourceName: "check")
         action.backgroundColor = .green
@@ -133,6 +153,11 @@ class TodoTableViewController: UITableViewController {
         
     }
 
+    // Add a delegate method to send to AddTodoVC when a cell is selected,
+    // and then update todo
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "ShowAddTodo", sender: tableView.cellForRow(at: indexPath))
+    }
 
     
     // MARK: - Navigation
@@ -142,7 +167,17 @@ class TodoTableViewController: UITableViewController {
 
         // Initialize managedContext on a second modal controller
         if let _ = sender as? UIBarButtonItem, let vc = segue.destination as? AddTodoViewController {
-            vc.managedContext = coreDataStack.managedContext
+            //vc.managedContext = coreDataStack.managedContext this is a mistake.
+            vc.managedContext = resultsController.managedObjectContext
+        }
+        
+        // To update todo cell, send to AddTodoViewController when a cell is selected
+        if let cell = sender as? UITableViewCell, let vc = segue.destination as? AddTodoViewController {
+            vc.managedContext = resultsController.managedObjectContext
+            if let indexPath = tableView.indexPath(for: cell) {
+                let todo = resultsController.object(at: indexPath)
+                vc.todo = todo
+            }
         }
     }
 }
@@ -161,6 +196,16 @@ extension TodoTableViewController: NSFetchedResultsControllerDelegate {
             if let indexPath = newIndexPath {
                 tableView.insertRows(at: [indexPath], with: .automatic)
             }
+        case .delete:
+            if let indexPath = indexPath {
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+            }
+        case .update:
+            if let indexPath = indexPath, let cell = tableView.cellForRow(at: indexPath) {
+                let todo = resultsController.object(at: indexPath)
+                cell.textLabel?.text = todo.title
+            }
+            
         default:
             break
         }
